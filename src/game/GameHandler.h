@@ -22,6 +22,7 @@ public:
     ~GameHandler();
 
     bool isRunning();
+    void draw();
     void tick();
     int quitGame();
 
@@ -53,6 +54,12 @@ bool GameHandler::isRunning()
     return this->m_running;
 }
 
+void GameHandler::draw() {
+    this->m_window.clear();
+    this->m_frame->draw(&this->m_window);
+    this->m_window.pushRenderToWindow();
+}
+
 void GameHandler::tick()
 {
 
@@ -60,9 +67,7 @@ void GameHandler::tick()
 
     this->m_frame->tick();
 
-    this->m_window.clear();
-    this->m_frame->draw(&this->m_window);
-    this->m_window.pushRenderToWindow();
+    this->draw();
 
     if (this->m_consitantFrameRate)
     {
