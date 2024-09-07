@@ -132,6 +132,6 @@ void Node::evolve()
     {
         this->m_bias += this->getRandomInRange(-0.01f, 0.01f);
     } else {
-        this->m_weights[toRandomize] += this->getRandomInRange(-1.0f, 1.0f);
+        this->m_weights[toRandomize] += this->getRandomInRange(-0.1f, 0.1f);
     }
 }

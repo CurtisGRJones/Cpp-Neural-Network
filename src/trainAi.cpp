@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <functional>
 #include <vector>
 #include <random>
@@ -31,7 +32,7 @@ private:
             if (!*isWaiting)
             {
                 *isWaiting = true;
-                for (int i = 0; i < 10000; i++)
+                for (int i = 0; i < 1800 && !*quit; i++)
                 {
                     for (auto &ai : *ais)
                     {
@@ -58,11 +59,11 @@ public:
         this->m_ais = std::make_shared<std::vector<std::shared_ptr<Ai>>>(ais.size(), nullptr);
         std::copy(ais.begin(), ais.end(), this->m_ais->begin());
         m_thread = std::thread(
-                  TrainingThread::trainBlock,
-                  m_ais,
-                  m_isWaiting,
-                  m_doneTick,
-                  m_quit);
+            TrainingThread::trainBlock,
+            m_ais,
+            m_isWaiting,
+            m_doneTick,
+            m_quit);
     }
 
     void stopThread()
@@ -98,22 +99,20 @@ int main()
 {
     std::srand(static_cast<unsigned>(std::time(nullptr)));
 
-    const uint32_t runnerCount = 12000;
     const uint32_t threadCount = 12;
+    const uint32_t aisCount = threadCount * 500;
 
     uint32_t evolutions = 0;
     const uint32_t maxTicks = 600;
 
     std::shared_ptr<Ai> trackAi;
 
-    float cumulativeScore = 0.0f;
-
     std::cout << "Building AI" << std::endl;
 
     std::vector<std::shared_ptr<Ai>> ais;
-    ais.reserve(runnerCount);
+    ais.reserve(aisCount);
 
-    for (int i = 0; i < runnerCount; i++)
+    for (int i = 0; i < aisCount; i++)
     {
         ais.push_back(std::make_shared<Ai>());
     }
@@ -145,17 +144,13 @@ int main()
         threads.push_back(TrainingThread(aiBatch));
     }
 
-    std::cout << "Training" << std::endl;
-
     while (game.isRunning())
     {
-        std::cout << "Ticking Threads" << std::endl;
         for (auto &thread : threads)
         {
             thread.tickThread();
         }
-        
-        std::cout << "Waiting to complete" << std::endl;
+
         for (auto &thread : threads)
         {
             while (!thread.isDoneTick() && game.isRunning())
@@ -166,30 +161,22 @@ int main()
             }
         }
 
-        std::cout << "Processing Results" << std::endl;
-
-        cumulativeScore = 0.0f;
-
         for (auto &ai : ais)
         {
-            cumulativeScore += ai->calcScore();
-            ;
+            ai->calcScore();
             ai->getFrame()->reset();
         }
 
         sortAIsByScore(ais);
 
-        std::cout << "Scores For Evolution " << evolutions << ": " << std::endl
-                  << "First: " << ais.back()->getScore() << std::endl
-                  << "Averge:" << cumulativeScore / float(runnerCount) << std::endl
-                  << "Last:" << ais.front()->getScore() << std::endl;
-
+        std::cout << std::left << "Scores For Evolution " << evolutions << ": " << std::endl
+                  << std::setw(8) << "First: " << std::setw(5) << ais.back()->getId()  << std::setw(5) <<  ais.back()->getFamilyId() << "-> " << ais.back()->getScore() << std::endl
+                  << std::setw(8) << "Median: " << std::setw(5) << ais.at(uint32_t(aisCount / 2))->getId()  << std::setw(5) << ais.at(uint32_t(aisCount / 2))->getFamilyId() << "-> " << ais.at(uint32_t(aisCount / 2))->getScore() << std::endl
+                  << std::setw(8) << "Last: " << std::setw(5) << ais.front()->getId()  << std::setw(5) << ais.front()->getFamilyId() << "-> " << ais.front()->getScore() << std::endl;
 
         evolutions++;
-        std::cout << "Changing Frame" << std::endl;
         game.changeFrame(ais.back()->getFrame());
 
-        std::cout << "Evolving" << std::endl;
         for (int i = 0; i < ais.size() / 2; i++)
         {
             *ais[i] = *ais[ais.size() - i - 1];
@@ -198,6 +185,7 @@ int main()
         }
     }
 
+    std::cout << "Joining Threads" << std::endl;
     for (auto &thread : threads)
     {
         thread.join();
