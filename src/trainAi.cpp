@@ -100,7 +100,7 @@ int main()
     std::srand(static_cast<unsigned>(std::time(nullptr)));
 
     const uint32_t threadCount = 12;
-    const uint32_t aisCount = threadCount * 500;
+    const uint32_t aisCount = threadCount * 100;
 
     uint32_t evolutions = 0;
     const uint32_t maxTicks = 600;
