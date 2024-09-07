@@ -69,7 +69,9 @@ int32_t Frame::getRandomTargetCord()
 
 void Frame::tick()
 {
-    if (SDL_IntersectRect(this->m_target.getRect(), this->m_player.getRect(), new SDL_Rect))
+    if ( 
+        SDL_HasIntersection(this->m_target.getRect(), this->m_player.getRect())
+    )
     {
         this->m_player.addPoint();
         this->m_target.move(

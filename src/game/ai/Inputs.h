@@ -7,6 +7,7 @@
 class Inputs
 {
 private:
+    std::shared_ptr<Frame> m_frame;
     SDL_Rect *m_playerRect;
 
     int32_t *m_playerMU;
@@ -52,11 +53,17 @@ public:
     const static uint32_t count = 4;
 
     Inputs(std::shared_ptr<Frame> frame)
+        : m_frame(frame),
+          m_playerRect(this->m_frame->getPlayer()->getRect()),
+          m_playerMU(this->m_frame->getPlayer()->getMU()),
+          m_playerMR(this->m_frame->getPlayer()->getMR()),
+          m_targetRect(this->m_frame->getTarget()->getRect())
     {
-        m_playerRect = frame->getPlayer()->getRect();
-        m_playerMR = frame->getPlayer()->getMR();
-        m_playerMU = frame->getPlayer()->getMU();
-        m_targetRect = frame->getTarget()->getRect();
+    }
+
+    ~Inputs() {
+        delete m_windowHeight;
+        delete m_windowWidth;
     }
 
     std::vector<float> generateInputs()

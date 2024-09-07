@@ -7,13 +7,13 @@
 class Layer
 {
 private:
-    Layer *m_next;
+    std::shared_ptr<Layer> m_next;
     std::vector<Node> m_nodes;
     uint32_t m_width;
 
 public:
-    Layer(uint32_t layerWidth, Layer *next = nullptr);
-    Layer(std::vector<std::vector<float>> weights, std::vector<float> bias, Layer *next = nullptr);
+    Layer(uint32_t layerWidth, std::shared_ptr<Layer> next = nullptr);
+    Layer(std::vector<std::vector<float>> weights, std::vector<float> bias, std::shared_ptr<Layer> next = nullptr);
     ~Layer();
 
     Layer& operator=(const Layer& other);
@@ -23,7 +23,7 @@ public:
     void setNodeValues(std::vector<float> values);
     std::vector<float> getNodeValues();
 
-    Layer *getNextLayer();
+    std::shared_ptr<Layer> getNextLayer();
 
     std::vector<float> run();
     void evolve();
@@ -33,7 +33,7 @@ public:
     }
 };
 
-Layer::Layer(uint32_t layerWidth, Layer *next)
+Layer::Layer(uint32_t layerWidth, std::shared_ptr<Layer> next)
     : m_width(layerWidth),
       m_next(next)
 {
@@ -45,7 +45,7 @@ Layer::Layer(uint32_t layerWidth, Layer *next)
     }
 }
 
-Layer::Layer(std::vector<std::vector<float>> weights, std::vector<float> bias, Layer *next)
+Layer::Layer(std::vector<std::vector<float>> weights, std::vector<float> bias, std::shared_ptr<Layer> next)
     : m_width(weights.size()),
       m_next(next)
 {
@@ -100,7 +100,7 @@ void Layer::setNodeValues(std::vector<float> values)
     }
 }
 
-Layer *Layer::getNextLayer() {
+std::shared_ptr<Layer> Layer::getNextLayer() {
     return this->m_next;
 }
 

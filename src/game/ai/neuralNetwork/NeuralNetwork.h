@@ -71,7 +71,7 @@ class NeuralNetwork
 private:
     std::string m_networkFileName;
 
-    Layer *m_layerLinkedList;
+    std::shared_ptr<Layer> m_layerLinkedList;
 
 public:
     NeuralNetwork(
@@ -92,7 +92,7 @@ public:
 
     std::vector<float> run(std::vector<float> input);
 
-    Layer *getLikedListLayers() {
+    std::shared_ptr<Layer> getLikedListLayers() {
         return this->m_layerLinkedList;
     }
 };
@@ -103,13 +103,13 @@ NeuralNetwork::NeuralNetwork(
     int32_t layerCount,
     int32_t outputNodeCount
 )
-    : m_layerLinkedList(new Layer(outputNodeCount))
+    : m_layerLinkedList(std::make_shared<Layer>(outputNodeCount))
 {
     for (int i = 0; i < layerCount; i++) {
-        this->m_layerLinkedList = new Layer(layerNodeCount, this->m_layerLinkedList);
+        this->m_layerLinkedList = std::make_shared<Layer>(layerNodeCount, this->m_layerLinkedList);
     }
 
-    this->m_layerLinkedList = new Layer(inputNodeCount, m_layerLinkedList);
+    this->m_layerLinkedList = std::make_shared<Layer>(inputNodeCount, m_layerLinkedList);
 }
 
 NeuralNetwork::NeuralNetwork(std::string networkFileName)
@@ -126,8 +126,8 @@ NeuralNetwork& NeuralNetwork::operator=(const NeuralNetwork& other) {
     if (this == &other)
         return *this;
 
-    Layer *thisStartLayer = this->m_layerLinkedList;
-    Layer *otherStartLayer = other.m_layerLinkedList;
+    std::shared_ptr<Layer> thisStartLayer = this->m_layerLinkedList;
+    std::shared_ptr<Layer> otherStartLayer = other.m_layerLinkedList;
 
     do {
         *thisStartLayer = *otherStartLayer;
