@@ -67,15 +67,19 @@ void Player::handleEvent(SDL_Event *event)
     case SDL_KEYDOWN:
         switch (event->key.keysym.scancode)
         {
+        case SDL_SCANCODE_UP:
         case SDL_SCANCODE_W:
             this->changeMomentumByDirection(0);
             break;
+        case SDL_SCANCODE_DOWN:
         case SDL_SCANCODE_S:
             this->changeMomentumByDirection(1);
             break;
+        case SDL_SCANCODE_RIGHT:
         case SDL_SCANCODE_D:
             this->changeMomentumByDirection(2);
             break;
+        case SDL_SCANCODE_LEFT:
         case SDL_SCANCODE_A:
             this->changeMomentumByDirection(3);
             break;

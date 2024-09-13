@@ -40,7 +40,7 @@ void Ai::tick()
 {
     std::vector<float> inputs = this->m_inputs.generateInputs();
 
-    std::vector<float> results = this->m_nn.run(inputs);
+    std::vector<float> results = this->m_nn.activate(inputs);
 
     float maxScore = -INFINITY;
     uint32_t index = 0;

@@ -3,20 +3,20 @@
 #include <string>
 #include <vector>
 
-#include "layer/Layer.h"
+#include "Node.h"
+#include "Connection.h"
 
 class NeuralNetwork
 {
 private:
     std::string m_networkFileName;
 
-    std::shared_ptr<Layer> m_layerLinkedList;
+    std::vector<Node> m_nodes;
+    std::vector<Connection> m_connections;
 
 public:
     NeuralNetwork(
         int32_t inputNodeCount,
-        int32_t layerNodeCount,
-        int32_t layerCount,
         int32_t outputNodeCount);
     NeuralNetwork(std::string networkFileName);
     ~NeuralNetwork();
@@ -28,7 +28,5 @@ public:
 
     void evolve();
 
-    std::vector<float> run(std::vector<float> input);
-
-    std::shared_ptr<Layer> getLikedListLayers();
+    void activate(std::vector<float> input);
 };

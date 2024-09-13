@@ -36,6 +36,8 @@ private:
                 {
                     for (auto &ai : *ais)
                     {
+                        // TODO offload the AI tick to the GPU
+
                         ai->tick();
                         ai->getFrame()->tick();
                     }
@@ -99,7 +101,7 @@ int main()
 {
     std::srand(static_cast<unsigned>(std::time(nullptr)));
 
-    const uint32_t threadCount = 12;
+    const uint32_t threadCount = 1;
     const uint32_t aisCount = threadCount * 100;
 
     uint32_t evolutions = 0;
