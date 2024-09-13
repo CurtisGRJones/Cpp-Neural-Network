@@ -5,7 +5,7 @@
 
 #include "Inputs.h"
 #include "neuralNetwork/NeuralNetwork.h"
-#include "../frame/Frame.h"
+#include "game/frame/Frame.h"
 
 class Ai
 {

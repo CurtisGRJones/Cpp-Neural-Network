@@ -11,6 +11,8 @@ class NeuralNetwork
 private:
     std::string m_networkFileName;
 
+    std::vector<Node*> m_inputNodes;
+    std::vector<Node*> m_outputNodes;
     std::vector<Node> m_nodes;
     std::vector<Connection> m_connections;
 
@@ -28,5 +30,5 @@ public:
 
     void evolve();
 
-    void activate(std::vector<float> input);
+    std::vector<float> activate(std::vector<float> input);
 };

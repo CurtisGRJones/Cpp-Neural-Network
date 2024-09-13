@@ -26,19 +26,19 @@ set(GAME_SOURCE_FILES
 )
 
 set(AI_HEADER_FILES
-    src/game/ai/Ai.h
-    src/game/ai/Inputs.h
-    src/game/ai/neuralNetwork/layer/Layer.h
-    src/game/ai/neuralNetwork/NeuralNetwork.h
-    src/game/ai/neuralNetwork/nodes/Node.h
+    src/ai/Ai.h
+    src/ai/Inputs.h
+    src/ai/neuralNetwork/Connection.h
+    src/ai/neuralNetwork/NeuralNetwork.h
+    src/ai/neuralNetwork/Node.h
 )
 
 set(AI_SOURCE_FILES
-    src/game/ai/Ai.cpp
-    src/game/ai/Inputs.cpp
-    src/game/ai/neuralNetwork/layer/Layer.cpp
-    src/game/ai/neuralNetwork/NeuralNetwork.cpp
-    src/game/ai/neuralNetwork/nodes/Node.cpp
+    src/ai/Ai.cpp
+    src/ai/Inputs.cpp
+    src/ai/neuralNetwork/Connection.cpp
+    src/ai/neuralNetwork/NeuralNetwork.cpp
+    src/ai/neuralNetwork/Node.cpp
 )
 
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
