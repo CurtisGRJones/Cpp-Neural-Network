@@ -41,6 +41,15 @@ set(AI_SOURCE_FILES
     src/game/ai/neuralNetwork/nodes/Node.cpp
 )
 
+set(STATS_HEADER_FILES
+    src/modelStats/modelStats.h
+    src/modelStats/graph/graph.h
+)
+
+set(STATS_SOURCE_FILES
+    
+)
+
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
   set(
     CMAKE_C_FLAGS
@@ -98,6 +107,8 @@ add_executable(TrainOverlord
     ${GAME_SOURCE_FILES}
     ${AI_HEADER_FILES}
     ${AI_SOURCE_FILES}
+    ${STATS_HEADER_FILES}
+    ${STATS_SOURCE_FILES}
 )
 
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
