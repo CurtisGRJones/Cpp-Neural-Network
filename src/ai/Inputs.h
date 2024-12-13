@@ -2,7 +2,7 @@
 #include <cmath>
 #include <vector>
 
-#include "game/frame/Frame.h"
+#include "../game/frame/Frame.h"
 
 class Inputs
 {

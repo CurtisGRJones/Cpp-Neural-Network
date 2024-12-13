@@ -8,7 +8,7 @@
 #include <thread>
 
 #include "game/GameHandler.h"
-#include "game/ai/Ai.h"
+#include "ai/Ai.h"
 
 class TrainingThread
 {
@@ -36,8 +36,6 @@ private:
                 {
                     for (auto &ai : *ais)
                     {
-                        // TODO offload the AI tick to the GPU
-
                         ai->tick();
                         ai->getFrame()->tick();
                     }
@@ -97,11 +95,14 @@ void sortAIsByScore(std::vector<std::shared_ptr<Ai>> &ais)
               { return a->getScore() < b->getScore(); });
 }
 
+// TODO add parms for the following
+// Show
+// Thread Count
 int main()
 {
     std::srand(static_cast<unsigned>(std::time(nullptr)));
 
-    const uint32_t threadCount = 1;
+    const uint32_t threadCount = 6;
     const uint32_t aisCount = threadCount * 10000;
 
     uint32_t evolutions = 0;

@@ -3,7 +3,7 @@
 #include <chrono>
 
 #include "game/GameHandler.h"
-#include "game/ai/Ai.h"
+#include "ai/Ai.h"
 
 
 // TODO add inputs for what NN to run
