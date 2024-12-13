@@ -95,12 +95,19 @@ void sortAIsByScore(std::vector<std::shared_ptr<Ai>> &ais)
               { return a->getScore() < b->getScore(); });
 }
 
-int main()
+int main(int argc, const char * argv[])
 {
     std::srand(static_cast<unsigned>(std::time(nullptr)));
 
-    const uint32_t threadCount = 12;
-    const uint32_t aisCount = threadCount * 100;
+    const uint32_t threadCount = 
+        argc >= 1 ?
+        std::stoi(argv[1]):
+        1;
+    const uint32_t aisCount = threadCount * (
+        argc > 2 ?
+        std::stoi(argv[2]):
+        10
+    );
 
     uint32_t evolutions = 0;
     const uint32_t maxTicks = 600;
