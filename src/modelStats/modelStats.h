@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+// #include <SDL_ttf/SDL_ttf.h>
 #include <memory>
 #include <vector>
 
@@ -13,10 +14,13 @@ private:
     std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> m_renderer;
     Graph m_graph;
 
+    uint32_t *m_evolution;
+
 public:
-    ModelStats()
+    ModelStats(uint32_t *evolution)
         : m_window(nullptr, SDL_DestroyWindow),
-          m_renderer(nullptr, SDL_DestroyRenderer)
+          m_renderer(nullptr, SDL_DestroyRenderer),
+          m_evolution(evolution)
     {
         if (SDL_Init(SDL_INIT_VIDEO) != 0)
         {
@@ -79,6 +83,8 @@ public:
         255);
 
         SDL_RenderFillRect(this->m_renderer.get(), &backGround);
+
+
 
         m_graph.draw(this->m_renderer.get());
 

@@ -8,12 +8,16 @@ set(SDL2_DIR "${CMAKE_SOURCE_DIR}/vendor/SDL2")
 include_directories(${SDL2_DIR}/include)
 link_directories(${SDL2_DIR}/lib)
 
-set(SDL_TTF_DIR "${CMAKE_SOURCE_DIR}/vendor/SDL_TTF")
-include_directories(${SDL_TTF_DIR}/include)
-link_directories(${SDL_TTF_DIR}/lib)
+set(SDL2_ttf_DIR "${CMAKE_SOURCE_DIR}/vendor/SDL_TTF")
+include_directories(${SDL2_ttf_DIR}/include)
+link_directories(${SDL2_ttf_DIR}/lib)
 
+set(freetype_DIR "${CMAKE_SOURCE_DIR}/vendor/Freetype")
+include_directories(${freetype_DIR}/include)
+link_directories(${freetype_DIR}/lib)
 
 find_package(SDL2 REQUIRED)
+find_package(SDL2_ttf REQUIRED)
 
 set(GAME_HEADER_FILES
     src/game/frame/Frame.h
@@ -76,8 +80,8 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug")
   )
 endif()
 
-target_link_libraries(Overlord ${SDL2_LIBRARIES})
-target_link_libraries(Overlord ${SDL_TTL_LIBRARIES})
+target_include_directories(Overlord PRIVATE ${SDL2_INCLUDE_DIR})
+target_link_libraries(Overlord SDL2 dl SDL2_ttf freetype)
 
 add_executable(RunOverlord 
     src/runAi.cpp
@@ -89,8 +93,7 @@ add_executable(RunOverlord
 )
 
 target_include_directories(RunOverlord PRIVATE ${SDL2_INCLUDE_DIR})
-target_link_libraries(RunOverlord ${SDL2_LIBRARIES})
-target_link_libraries(RunOverlord ${SDL_TTL_LIBRARIES})
+target_link_libraries(RunOverlord SDL2 dl SDL2_ttf freetype)
 
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
   target_link_options(
@@ -126,6 +129,5 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug")
 endif()
 
 target_include_directories(TrainOverlord PRIVATE ${SDL2_INCLUDE_DIR})
-target_link_libraries(TrainOverlord ${SDL2_LIBRARIES})
-target_link_libraries(TrainOverlord ${SDL_TTL_LIBRARIES})
+target_link_libraries(TrainOverlord SDL2 dl SDL2_ttf freetype)
 
