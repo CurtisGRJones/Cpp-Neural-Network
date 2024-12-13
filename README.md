@@ -14,7 +14,7 @@ build
 
 ## Running Intructions
 
-While in ./build yyou can run the following
+While in ./build you can run the following
 
 ```
 ./Overlord //Play Game
