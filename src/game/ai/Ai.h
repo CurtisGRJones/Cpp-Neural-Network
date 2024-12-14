@@ -12,9 +12,9 @@ class Ai
 private:
     NeuralNetwork m_nn = NeuralNetwork(
         Inputs::count,
-        5,
         10,
-        10);
+        10,
+        5);
 
     std::shared_ptr<Frame> m_frame;
 
