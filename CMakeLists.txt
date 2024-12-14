@@ -60,7 +60,8 @@ set(STATS_HEADER_FILES
 )
 
 set(STATS_SOURCE_FILES
-    
+    src/modelStats/modelStats.cpp
+    src/modelStats/graph/graph.cpp
 )
 
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
