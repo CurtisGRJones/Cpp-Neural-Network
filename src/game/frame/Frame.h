@@ -12,8 +12,6 @@ private:
     Player m_player;
     Target m_target;
 
-    SDL_Rect backGround;
-
     int32_t getRandomTargetCord();
 
 public:
