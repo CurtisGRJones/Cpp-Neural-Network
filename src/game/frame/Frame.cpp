@@ -22,10 +22,6 @@ Frame::Frame()
               0,
               255))
 {
-    this->backGround.x = 0;
-    this->backGround.y = 0;
-    this->backGround.w = 600;
-    this->backGround.h = 600;
 }
 
 Frame::~Frame()
@@ -51,12 +47,7 @@ void Frame::tick()
 
 void Frame::draw(Window *window)
 {
-    window->drawFillRectWithColour(
-        &this->backGround,
-        100,
-        100,
-        100,
-        255);
+    window->fillBackground(0x646464FF);
     this->m_target.draw(window);
     this->m_player.draw(window);
 }

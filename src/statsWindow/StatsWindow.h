@@ -1,32 +1,16 @@
 #pragma once
 
-#include <SDL2/SDL.h>
-#include <SDL_ttf/SDL_ttf.h>
 #include <string>
 #include <filesystem>
 namespace fs = std::filesystem;
 
-#include "graph/graph.h"
-
-enum class HAlignment : char
-{
-    LEFT = 0,
-    CENTER = 1,
-    RIGHT = 2
-};
-
-enum class VAlignment : char
-{
-    TOP = 0,
-    CENTER = 1,
-    BOTTOM = 2
-};
+#include "../window/Window.h"
+#include "../window/drawable/graph/Graph.h"
 
 class ModelStats
 {
 private:
-    std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)> m_window;
-    std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> m_renderer;
+    Window m_window;
     Graph m_graph;
 
     uint32_t *m_evolution;
@@ -45,14 +29,6 @@ public:
     void clear();
 
 private: 
-    void displayText(
-        std::string str,
-        int32_t x,
-        int32_t y,
-        TTF_Font *font,
-        HAlignment alignX = HAlignment::LEFT,
-        VAlignment alignY = VAlignment::TOP);
-
     std::string makeFloatStatString(
         std::string preText, 
         float value, 

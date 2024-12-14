@@ -11,7 +11,7 @@
 
 #include "game/ai/Ai.h"
 
-#include "modelStats/modelStats.h"
+#include "statsWindow/StatsWindow.h"
 
 class TrainingThread
 {

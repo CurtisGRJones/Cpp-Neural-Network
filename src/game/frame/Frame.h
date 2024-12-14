@@ -1,18 +1,16 @@
 #pragma once
 
-#include "../window/Window.h"
+#include <random>
+
+#include "../../window/Window.h"
 #include "../player/Player.h"
 #include "../target/Target.h"
-
-#include <random>
 
 class Frame
 {
 private:
     Player m_player;
     Target m_target;
-
-    SDL_Rect backGround;
 
     int32_t getRandomTargetCord();
 

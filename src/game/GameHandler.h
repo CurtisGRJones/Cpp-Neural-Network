@@ -3,7 +3,7 @@
 #include <SDL2/SDL.h>
 #include <memory>
 #include <chrono>
-#include "window/Window.h"
+#include "../window/Window.h"
 #include "frame/Frame.h"
 
 class GameHandler
