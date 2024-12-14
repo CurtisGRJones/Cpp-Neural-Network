@@ -29,11 +29,18 @@ public:
     void clear();
 
 private: 
-    std::string makeFloatStatString(
-        std::string preText, 
+    std::string makeFloatString(
         float value, 
-        int totalWidth = 20, 
-        int valueWidth = 10,
         int precuision = 3
+    );
+
+    void drawStat (
+        std::string statName,
+        float statVal,
+        uint32_t x,
+        uint32_t y,
+        uint32_t w,
+        HAlignment hAlignment,
+        VAlignment vAlignment = VAlignment::TOP
     );
 };
