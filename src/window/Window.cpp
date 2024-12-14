@@ -42,6 +42,43 @@ Window::~Window()
 {
 }
 
+void Window::fillBackground(uint32_t rgba){
+    return this->fillBackground( 
+        this->getRFromI32(rgba), 
+        this->getGFromI32(rgba), 
+        this->getBFromI32(rgba), 
+        this->getAFromI32(rgba)
+    );
+}
+
+void Window::fillBackground(uint8_t r, uint8_t g, uint8_t b, uint8_t a){
+    int32_t width, height;
+
+    SDL_GetWindowSize(this->m_window.get(), &width, &height);
+
+    SDL_Rect rect = SDL_Rect { 
+        0, 
+        0, 
+        width,
+        height
+    };
+
+    return drawFillRectWithColour(
+        &rect,
+        r, g, b, a
+    );
+}
+
+void Window::drawFillRectWithColour(SDL_Rect *rect, uint32_t rgba) {
+    return this->drawFillRectWithColour(
+        rect, 
+        this->getRFromI32(rgba), 
+        this->getGFromI32(rgba), 
+        this->getBFromI32(rgba), 
+        this->getAFromI32(rgba)
+    );
+}
+
 void Window::drawFillRectWithColour(SDL_Rect *rect, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
     SDL_SetRenderDrawColor(
@@ -59,4 +96,17 @@ void Window::pushRenderToWindow()
 void Window::clear()
 {
     SDL_RenderClear(this->m_renderer.get());
+}
+
+uint8_t Window::getRFromI32(uint32_t rgba) {
+    return (rgba >> 24) & 0xFF;
+}
+uint8_t Window::getGFromI32(uint32_t rgba) {
+    return (rgba >> 16) & 0xFF;
+}
+uint8_t Window::getBFromI32(uint32_t rgba) {
+    return (rgba >> 8) & 0xFF;
+}
+uint8_t Window::getAFromI32(uint32_t rgba){
+    return rgba & 0xFF;
 }

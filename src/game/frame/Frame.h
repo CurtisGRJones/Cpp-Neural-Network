@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../window/Window.h"
+#include <random>
+
+#include "../../window/Window.h"
 #include "../player/Player.h"
 #include "../target/Target.h"
-
-#include <random>
 
 class Frame
 {
