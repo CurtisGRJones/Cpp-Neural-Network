@@ -238,8 +238,9 @@ public:
 
         m_graph.draw(this->m_renderer.get());
 
+        this->displayText("Generation", 300, 10, this->m_defaultFont.get(), HAlignment::CENTER);
         std::string strEvolution = std::to_string(*(this->m_evolution));
-        this->displayText(strEvolution, 300, 10, this->m_defaultFont.get(), HAlignment::CENTER);
+        this->displayText(strEvolution, 300, 40, this->m_defaultFont.get(), HAlignment::CENTER);
 
         // TODO place value and stat sperately for nicer formatting
         // TODO add ability for display text to run multiple lines

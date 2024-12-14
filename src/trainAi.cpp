@@ -183,13 +183,6 @@ int main(int argc, const char *argv[])
 
         stats.draw();
 
-        std::cout
-            << '\t' << std::left << "Evolution " << evolutions << ": " << std::endl
-            << '\t' << std::setw(10) << "Position " << std::setw(5) << "Id" << std::setw(10) << "Family ID" << "   Score" << std::endl
-            << '\t' << std::setw(10) << "First: " << std::setw(5) << ais.back()->getId() << std::setw(10) << ais.back()->getFamilyId() << "   " << ais.back()->getScore() << std::endl
-            << '\t' << std::setw(10) << "Median: " << std::setw(5) << ais.at(uint32_t(aisCount / 2))->getId() << std::setw(10) << ais.at(uint32_t(aisCount / 2))->getFamilyId() << "   " << ais.at(uint32_t(aisCount / 2))->getScore() << std::endl
-            << '\t' << std::setw(10) << "Last: " << std::setw(5) << ais.front()->getId() << std::setw(10) << ais.front()->getFamilyId() << "   " << ais.front()->getScore() << std::endl;
-
         evolutions++;
         game.changeFrame(ais.back()->getFrame());
 
