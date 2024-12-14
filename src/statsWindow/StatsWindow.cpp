@@ -57,7 +57,7 @@ void ModelStats::draw()
 {
     this->m_window.fillBackground(0x202020FF);
 
-    this->m_graph.drawFromVector(&(this->m_window), this->m_scores, SDL_Rect{0, 100, 600, 300}, 0xFF0000FF, 0x0000FFFF);
+    this->m_graph.drawFromVector(&(this->m_window), this->m_scores, SDL_Rect{0, 100, 600, 300}, 0xFF0000FF);
 
     this->m_window.displayText("Generation", 300, 10, this->m_defaultFont.get(), HAlignment::CENTER);
     std::string strEvolution = std::to_string(*(this->m_evolution));
