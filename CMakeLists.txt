@@ -27,7 +27,7 @@ set(GAME_HEADER_FILES
     src/game/GameHandler.h
     src/game/player/Player.h
     src/game/target/Target.h
-    src/game/window/Window.h
+    src/window/Window.h
 )
 
 set(GAME_SOURCE_FILES
@@ -35,7 +35,7 @@ set(GAME_SOURCE_FILES
     src/game/GameHandler.cpp
     src/game/player/Player.cpp
     src/game/target/Target.cpp
-    src/game/window/Window.cpp
+    src/window/Window.cpp
 )
 
 set(AI_HEADER_FILES
@@ -55,13 +55,13 @@ set(AI_SOURCE_FILES
 )
 
 set(STATS_HEADER_FILES
-    src/modelStats/modelStats.h
-    src/modelStats/graph/graph.h
+    src/statsWindow/StatsWindow.h
+    src/window/drawable/graph/Graph.h
 )
 
 set(STATS_SOURCE_FILES
-    src/modelStats/modelStats.cpp
-    src/modelStats/graph/graph.cpp
+    src/statsWindow/StatsWindow.cpp
+    src/window/drawable/graph/Graph.cpp
 )
 
 if(CMAKE_BUILD_TYPE MATCHES "Debug")

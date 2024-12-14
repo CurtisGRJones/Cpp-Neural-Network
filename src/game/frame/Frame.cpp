@@ -51,12 +51,9 @@ void Frame::tick()
 
 void Frame::draw(Window *window)
 {
-    window->drawFillRectWithColour(
+    window->drawFullRect(
         &this->backGround,
-        100,
-        100,
-        100,
-        255);
+        0x646464FF);
     this->m_target.draw(window);
     this->m_player.draw(window);
 }

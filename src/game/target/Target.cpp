@@ -1,5 +1,6 @@
 #include "Target.h"
 
+// TODO fix this colour system
 Target::Target(
     int32_t x,
     int32_t y,
@@ -22,7 +23,7 @@ Target::~Target()
 }
 
 void Target::draw(Window * window) {
-    window->drawFillRectWithColour(
+    window->drawFullRect(
         &this->m_rect,
         this->m_r,
         this->m_g,

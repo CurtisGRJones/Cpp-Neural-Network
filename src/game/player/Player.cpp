@@ -1,5 +1,6 @@
 #include "Player.h"
 
+// TODO fix this colour system
 Player::Player(
     int32_t x,
     int32_t y,
@@ -24,7 +25,7 @@ Player::~Player()
 
 void Player::draw(Window *window)
 {
-    window->drawFillRectWithColour(
+    window->drawFullRect(
         &this->m_rect,
         this->m_r,
         this->m_g,
