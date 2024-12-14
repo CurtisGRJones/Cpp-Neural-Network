@@ -26,3 +26,7 @@ While in ./build you can run the following
  - Add SDL2 to repo to prevent having to clone it
  - Save & load neural network
  - Fully implment the NEAT framework
+ - Implement a JS runner to be able to use the output files of this game
+ - Implement visualization of the neural network
+ - Add minor audio effects
+ - 

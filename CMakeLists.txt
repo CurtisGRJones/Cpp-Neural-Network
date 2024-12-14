@@ -4,10 +4,23 @@ project(Overlord)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(SDL2_INCLUDE_DIR "/usr/include/SDL2")
-set(SDL2_LIBRARIES "/usr/lib/x86_64-linux-gnu/libSDL2.so")
+set(SDL2_DIR "${CMAKE_SOURCE_DIR}/vendor/SDL2")
+include_directories(${SDL2_DIR}/include)
+link_directories(${SDL2_DIR}/lib)
+
+set(SDL2_ttf_DIR "${CMAKE_SOURCE_DIR}/vendor/SDL_TTF")
+include_directories(${SDL2_ttf_DIR}/include)
+link_directories(${SDL2_ttf_DIR}/lib)
+
+set(freetype_DIR "${CMAKE_SOURCE_DIR}/vendor/Freetype")
+include_directories(${freetype_DIR}/include)
+link_directories(${freetype_DIR}/lib)
 
 find_package(SDL2 REQUIRED)
+find_package(SDL2_ttf REQUIRED)
+find_package(PNG REQUIRED)
+find_package(BZip2 REQUIRED)
+find_package(ZLIB REQUIRED)
 
 set(GAME_HEADER_FILES
     src/game/frame/Frame.h
@@ -41,6 +54,16 @@ set(AI_SOURCE_FILES
     src/game/ai/neuralNetwork/nodes/Node.cpp
 )
 
+set(STATS_HEADER_FILES
+    src/modelStats/modelStats.h
+    src/modelStats/graph/graph.h
+)
+
+set(STATS_SOURCE_FILES
+    src/modelStats/modelStats.cpp
+    src/modelStats/graph/graph.cpp
+)
+
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
   set(
     CMAKE_C_FLAGS
@@ -61,8 +84,25 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug")
   )
 endif()
 
-target_include_directories(Overlord PRIVATE ${SDL2_INCLUDE_DIR})
-target_link_libraries(Overlord ${SDL2_LIBRARIES})
+target_include_directories(Overlord PRIVATE 
+    ${SDL2_INCLUDE_DIR}
+)
+
+target_link_libraries(Overlord 
+    ${PNG_LIBRARIES}
+    ${BZIP2_LIBRARIES}
+    ${ZLIB_LIBRARIES}
+)
+
+target_link_libraries(Overlord
+    SDL2 
+    dl 
+    SDL2_ttf 
+    freetype
+    png
+    z
+    bz2
+)
 
 add_executable(RunOverlord 
     src/runAi.cpp
@@ -73,8 +113,19 @@ add_executable(RunOverlord
 
 )
 
-target_include_directories(RunOverlord PRIVATE ${SDL2_INCLUDE_DIR})
-target_link_libraries(RunOverlord ${SDL2_LIBRARIES})
+target_include_directories(RunOverlord PRIVATE 
+    ${SDL2_INCLUDE_DIR}
+)
+
+target_link_libraries(RunOverlord
+    SDL2 
+    dl 
+    SDL2_ttf 
+    freetype
+    png
+    z
+    bz2
+)
 
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
   target_link_options(
@@ -98,6 +149,8 @@ add_executable(TrainOverlord
     ${GAME_SOURCE_FILES}
     ${AI_HEADER_FILES}
     ${AI_SOURCE_FILES}
+    ${STATS_HEADER_FILES}
+    ${STATS_SOURCE_FILES}
 )
 
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
@@ -107,6 +160,19 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug")
   )
 endif()
 
-target_include_directories(TrainOverlord PRIVATE ${SDL2_INCLUDE_DIR})
-target_link_libraries(TrainOverlord ${SDL2_LIBRARIES})
+target_include_directories(TrainOverlord PRIVATE 
+    ${SDL2_INCLUDE_DIR}
+)
+
+target_link_libraries(TrainOverlord 
+    SDL2 
+    dl 
+    SDL2_ttf 
+    freetype
+    png
+    z
+    bz2
+)
+
+file(COPY ${CMAKE_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR})
 

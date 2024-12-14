@@ -8,7 +8,10 @@
 #include <thread>
 
 #include "game/GameHandler.h"
+
 #include "game/ai/Ai.h"
+
+#include "modelStats/modelStats.h"
 
 class TrainingThread
 {
@@ -95,19 +98,13 @@ void sortAIsByScore(std::vector<std::shared_ptr<Ai>> &ais)
               { return a->getScore() < b->getScore(); });
 }
 
-int main(int argc, const char * argv[])
+int main(int argc, const char *argv[])
 {
     std::srand(static_cast<unsigned>(std::time(nullptr)));
 
-    const uint32_t threadCount = 
-        argc >= 1 ?
-        std::stoi(argv[1]):
-        1;
-    const uint32_t aisCount = threadCount * (
-        argc > 2 ?
-        std::stoi(argv[2]):
-        10
-    );
+    const uint32_t threadCount =
+        argc > 1 ? std::stoi(argv[1]) : 1;
+    const uint32_t aisCount = threadCount * (argc > 2 ? std::stoi(argv[2]) : 10);
 
     uint32_t evolutions = 0;
     const uint32_t maxTicks = 600;
@@ -151,6 +148,11 @@ int main(int argc, const char * argv[])
         threads.push_back(TrainingThread(aiBatch));
     }
 
+    std::cout << "Making Stats Window" << std::endl;
+    std::vector<float> scores(aisCount, 0.0f);
+    ModelStats stats(&evolutions, &scores);
+    stats.draw();
+    
     while (game.isRunning())
     {
         for (auto &thread : threads)
@@ -176,10 +178,10 @@ int main(int argc, const char * argv[])
 
         sortAIsByScore(ais);
 
-        std::cout << std::left << "Scores For Evolution " << evolutions << ": " << std::endl
-                  << std::setw(8) << "First: " << std::setw(5) << ais.back()->getId()  << std::setw(5) <<  ais.back()->getFamilyId() << "-> " << ais.back()->getScore() << std::endl
-                  << std::setw(8) << "Median: " << std::setw(5) << ais.at(uint32_t(aisCount / 2))->getId()  << std::setw(5) << ais.at(uint32_t(aisCount / 2))->getFamilyId() << "-> " << ais.at(uint32_t(aisCount / 2))->getScore() << std::endl
-                  << std::setw(8) << "Last: " << std::setw(5) << ais.front()->getId()  << std::setw(5) << ais.front()->getFamilyId() << "-> " << ais.front()->getScore() << std::endl;
+        std::transform(ais.begin(), ais.end(), scores.begin(), [](std::shared_ptr<Ai> val)
+                       { return val->getScore(); });
+
+        stats.draw();
 
         evolutions++;
         game.changeFrame(ais.back()->getFrame());
