@@ -9,8 +9,7 @@
 class Graph
 {
 private:
-    ;
-
+    // TODO make this configurable
     u_int32_t m_positionX = 0;
     u_int32_t m_positionY = 150;
 
@@ -21,6 +20,11 @@ private:
 
 public:
     Graph()
+    {
+    }
+
+    Graph(std::vector<float> *points)
+        : m_points(points)
     {
     }
 

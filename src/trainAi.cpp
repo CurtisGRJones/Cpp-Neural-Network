@@ -149,12 +149,8 @@ int main(int argc, const char *argv[])
     }
 
     std::cout << "Making Stats Window" << std::endl;
-    ModelStats stats(&evolutions);
-    stats.draw();
-
     std::vector<float> scores(aisCount, 0.0f);
-    stats.useScoreVector(&scores);
-
+    ModelStats stats(&evolutions, &scores);
     stats.draw();
     
     while (game.isRunning())

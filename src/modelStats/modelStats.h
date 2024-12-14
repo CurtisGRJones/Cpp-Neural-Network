@@ -3,12 +3,28 @@
 #include <SDL2/SDL.h>
 #include <SDL_ttf/SDL_ttf.h>
 #include <string>
+#include <sstream>
 #include <memory>
 #include <vector>
+#include <numeric>
 #include <filesystem>
 namespace fs = std::filesystem;
 
 #include "graph/graph.h"
+
+enum class HAlignment : char
+{
+    LEFT = 0,
+    CENTER = 1,
+    RIGHT = 2
+};
+
+enum class VAlignment : char
+{
+    TOP = 0,
+    CENTER = 1,
+    BOTTOM = 2
+};
 
 class ModelStats
 {
@@ -18,12 +34,126 @@ private:
     Graph m_graph;
 
     uint32_t *m_evolution;
+    std::vector<float> *m_scores;
+    fs::path m_defaultFontPath = std::filesystem::current_path() / "assets" / "fonts" / "Roboto-Black.ttf";
+    std::unique_ptr<TTF_Font, decltype(&TTF_CloseFont)> m_defaultFont = {nullptr, &TTF_CloseFont};
+
+    void displayText(
+        std::string str,
+        int32_t x,
+        int32_t y,
+        TTF_Font *font,
+        // TODO change these to an int "align" flag
+        HAlignment alignX = HAlignment::LEFT,
+        VAlignment alignY = VAlignment::TOP)
+    {
+        if (this->m_evolution != nullptr)
+        {
+            if (font == nullptr)
+            {
+                std::cerr << "TTF_OpenFont Error: " << TTF_GetError() << std::endl;
+                SDL_DestroyRenderer(this->m_renderer.get());
+                SDL_DestroyWindow(this->m_window.get());
+                TTF_Quit();
+                SDL_Quit();
+                return;
+            }
+
+            SDL_Surface *textSurface = TTF_RenderText_Solid(
+                font,
+                str.c_str(),
+                {255, 255, 255, 255});
+
+            if (textSurface == nullptr)
+            {
+                std::cerr << "TTF_RenderText_Solid Error: " << TTF_GetError() << std::endl;
+                TTF_CloseFont(font);
+                SDL_DestroyRenderer(this->m_renderer.get());
+                SDL_DestroyWindow(this->m_window.get());
+                TTF_Quit();
+                SDL_Quit();
+                return;
+            }
+
+            SDL_Texture *textTexture = SDL_CreateTextureFromSurface(
+                this->m_renderer.get(),
+                textSurface);
+
+            if (textTexture == nullptr)
+            {
+                std::cerr << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
+                SDL_FreeSurface(textSurface);
+                TTF_CloseFont(font);
+                SDL_DestroyRenderer(this->m_renderer.get());
+                SDL_DestroyWindow(this->m_window.get());
+                TTF_Quit();
+                SDL_Quit();
+                return;
+            }
+
+            int32_t quadX = x;
+
+            if (alignX == HAlignment::CENTER)
+            {
+                quadX -= textSurface->w / 2;
+            }
+            else if (alignX == HAlignment::RIGHT)
+            {
+                quadX -= textSurface->w;
+            }
+
+            int32_t quadY = y;
+
+            if (alignY == VAlignment::CENTER)
+            {
+                quadX -= textSurface->h / 2;
+            }
+            else if (alignY == VAlignment::BOTTOM)
+            {
+                quadX -= textSurface->h;
+            }
+
+            SDL_Rect renderQuad = {
+                quadX,
+                quadY,
+                textSurface->w,
+                textSurface->h};
+
+            SDL_RenderCopy(this->m_renderer.get(), textTexture, NULL, &renderQuad);
+
+            SDL_FreeSurface(textSurface);
+            SDL_DestroyTexture(textTexture);
+        }
+    }
+
+    std::string makeFloatStatString(
+        std::string preText, 
+        float value, 
+        int totalWidth = 20, 
+        int valueWidth = 10,
+        int precuision = 3
+    ) {
+        std::ostringstream oss;
+        oss << std::left        
+            << std::setw(totalWidth - valueWidth)
+            << preText
+            << std::fixed
+            << std::setprecision(precuision)
+            << std::setw(valueWidth)
+            << std::right
+            << value;
+        return oss.str();
+    }
 
 public:
-    ModelStats(uint32_t *evolution)
+    ModelStats(
+        uint32_t *evolution,
+        std::vector<float> *scores)
         : m_window(nullptr, SDL_DestroyWindow),
           m_renderer(nullptr, SDL_DestroyRenderer),
-          m_evolution(evolution)
+          m_evolution(evolution),
+          m_scores(scores),
+          m_graph(Graph(scores))
     {
         if (SDL_Init(SDL_INIT_VIDEO) != 0)
         {
@@ -57,6 +187,25 @@ public:
         }
 
         m_renderer.reset(renderer);
+
+        if (TTF_Init() == -1)
+        {
+            std::cerr << "TTF_Init Error: " << TTF_GetError() << std::endl;
+            SDL_Quit();
+            return;
+        }
+
+        m_defaultFont.reset(TTF_OpenFont(this->m_defaultFontPath.c_str(), 24));
+
+        if (this->m_defaultFont == nullptr)
+        {
+            std::cerr << "TTF_OpenFont Error: " << TTF_GetError() << std::endl;
+            SDL_DestroyRenderer(this->m_renderer.get());
+            SDL_DestroyWindow(this->m_window.get());
+            TTF_Quit();
+            SDL_Quit();
+            return;
+        }
     }
 
     ~ModelStats()
@@ -87,79 +236,57 @@ public:
 
         SDL_RenderFillRect(this->m_renderer.get(), &backGround);
 
-        if (this->m_evolution != nullptr)
-        {
-            if (TTF_Init() == -1)
-            {
-                std::cerr << "TTF_Init Error: " << TTF_GetError() << std::endl;
-                SDL_Quit(); // Clean up SDL before returning
-                return;
-            }
-            
-            const std::string strEvolution = std::to_string(*(this->m_evolution));
-
-            fs::path fontPath = std::filesystem::current_path() / "assets" / "fonts" / "Roboto-Black.ttf";
-
-            TTF_Font *font = TTF_OpenFont(fontPath.string().c_str(), 24);
-
-            if (font == nullptr)
-            {
-                std::cerr << "TTF_OpenFont Error: " << TTF_GetError() << std::endl;
-                SDL_DestroyRenderer(this->m_renderer.get());
-                SDL_DestroyWindow(this->m_window.get());
-                TTF_Quit();
-                SDL_Quit();
-                return;
-            }
-
-            SDL_Surface *textSurface = TTF_RenderText_Solid(
-                font,
-                strEvolution.c_str(),
-                {255, 255, 255, 255});
-
-            if (textSurface == nullptr)
-            {
-                std::cerr << "TTF_RenderText_Solid Error: " << TTF_GetError() << std::endl;
-                TTF_CloseFont(font);
-                SDL_DestroyRenderer(this->m_renderer.get());
-                SDL_DestroyWindow(this->m_window.get());
-                TTF_Quit();
-                SDL_Quit();
-                return;
-            }
-
-
-            SDL_Texture *textTexture = SDL_CreateTextureFromSurface(
-                this->m_renderer.get(),
-                textSurface);
-
-            if (textTexture == nullptr)
-            {
-                std::cerr << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
-                SDL_FreeSurface(textSurface);
-                TTF_CloseFont(font);
-                SDL_DestroyRenderer(this->m_renderer.get());
-                SDL_DestroyWindow(this->m_window.get());
-                TTF_Quit();
-                SDL_Quit();
-                return;
-            }
-
-            SDL_Rect renderQuad = {
-                300 - textSurface->w / 2,
-                10,
-                textSurface->w,
-                textSurface->h};
-
-            SDL_RenderCopy(this->m_renderer.get(), textTexture, NULL, &renderQuad);
-
-            SDL_FreeSurface(textSurface);
-            SDL_DestroyTexture(textTexture);
-            TTF_CloseFont(font);
-
-        }
-
         m_graph.draw(this->m_renderer.get());
+
+        std::string strEvolution = std::to_string(*(this->m_evolution));
+        this->displayText(strEvolution, 300, 10, this->m_defaultFont.get(), HAlignment::CENTER);
+
+        // TODO place value and stat sperately for nicer formatting
+        // TODO add ability for display text to run multiple lines
+        this->displayText(
+            this->makeFloatStatString("Last:", this->m_scores->front()),
+            50,
+            500,
+            this->m_defaultFont.get(),
+            HAlignment::LEFT,
+            VAlignment::TOP);
+
+        this->displayText(
+            this->makeFloatStatString("First:", this->m_scores->back()),
+            550,
+            500,
+            this->m_defaultFont.get(),
+            HAlignment::RIGHT,
+            VAlignment::TOP);
+
+        size_t n = this->m_scores->size();
+        float median;
+        if (n % 2 != 0)
+        {
+            median = this->m_scores->at(n / 2);
+        }
+        else
+        {
+            median = (this->m_scores->at(n / 2 - 1) + this->m_scores->at(n / 2)) / 2.0;
+        }
+        this->displayText(
+            this->makeFloatStatString("Median:", median),
+            50,
+            550,
+            this->m_defaultFont.get(),
+            HAlignment::LEFT,
+            VAlignment::TOP);
+
+        
+        float average = std::accumulate(this->m_scores->begin(), this->m_scores->end(), 0.0f) / n;
+
+        this->displayText(
+            this->makeFloatStatString("Average:", average),
+            550,
+            550,
+            this->m_defaultFont.get(),
+            HAlignment::RIGHT,
+            VAlignment::TOP);
 
         SDL_RenderPresent(this->m_renderer.get());
     }
